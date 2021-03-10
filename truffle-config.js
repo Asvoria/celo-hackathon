@@ -8,7 +8,7 @@
  *
  * truffleframework.com/docs/advanced/configuration
  */
-
+/* //Original
 const Kit = require('@celo/contractkit')
 const kit = Kit.newKit('https://alfajores-forno.celo-testnet.org')
 
@@ -17,6 +17,19 @@ const getAccount = require('./getAccount').getAccount
 async function awaitWrapper(){
     let account = await getAccount()
     kit.connection.addAccount(account.privateKey)
+}
+awaitWrapper()
+*/
+
+const Web3 = require('web3')
+const ContractKit = require('@celo/contractkit')
+const web3 = new Web3('https://alfajores-forno.celo-testnet.org')
+const kit = ContractKit.newKitFromWeb3(web3)
+const getAccount = require('./getAccount').getAccount
+
+async function awaitWrapper(){
+    let account = await getAccount()
+    kit.addAccount(account.privateKey)
 }
 awaitWrapper()
 
@@ -43,6 +56,8 @@ module.exports = {
     //  port: 8545,            // Standard Ethereum port (default: none)
     //  network_id: "*",       // Any network (default: none)
     // },
+
+    /* //Original
     test: {
       host: "127.0.0.1",
       port: 7545,
@@ -52,6 +67,18 @@ module.exports = {
       provider: kit.connection.web3.currentProvider, // CeloProvider
       network_id: 44787                   // latest Alfajores network id
     }
+    */
+
+    test: {
+      host: "127.0.0.1",
+      port: 7545,
+      network_id: "*"
+    },
+    alfajores: {
+      provider: kit.connection.web3.currentProvider, // CeloProvider
+      network_id: 44787                              // Alfajores network id
+    }
+
 
     // Another network with more advanced options...
     // advanced: {
