@@ -1,5 +1,5 @@
-var HelloWorld = artifacts.require("PINE")
+var PINE = artifacts.require("PINE")
 
 module.exports = function(deployer) {
-    await deployer.deploy(pine_v0)
+    await deployer.deploy(PINE)
 }

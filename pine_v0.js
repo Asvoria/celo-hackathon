@@ -13,21 +13,23 @@ const web3 = new Web3('https://alfajores-forno.celo-testnet.org')
 const kit = ContractKit.newKitFromWeb3(web3)
 
 // import HelloWorld info
-const pine_v0 = require('./build/contracts/pine_v0.json')
+const PINE = require('./build/contracts/PINE.json')
 
 // Initialize a new Contract interface
 async function initContract(){
     // Check the Celo network ID
     const networkId = await web3.eth.net.getId();
-    const deployedNetwork = pine_v0.networks[networkId];
+    const deployedNetwork = PINE.networks[networkId];
     // Create a new contract instance with the HelloWorld contract info
     let instance = new web3.eth.Contract(
-        pine_v0.abi,
+        PINE.abi,
         deployedNetwork && deployedNetwork.address
     );
 
     getName(instance)
-    setName(instance, "hello world!")
+    setName(instance, "PINE")
+
+    
 }
 
 // Read the 'name' stored in the HelloWorld.sol contract

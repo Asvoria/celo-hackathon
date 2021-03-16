@@ -24,6 +24,7 @@ function getAccount() {
             resolve(randomAccount)
         }
     })
+
 }
 
 module.exports = {
