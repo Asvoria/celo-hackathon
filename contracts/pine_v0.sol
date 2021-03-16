@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity >=0.4.22 <0.9.0;
-import "../node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "./ERC20.sol";
+//Flatten the OpenZeppellin so that the truffle migration can work accordingly
 
 contract PINE is ERC20 {
 
@@ -67,7 +68,7 @@ contract PINE is ERC20 {
         uint256 InterestRate = (monthlySalary/100)* (5)/(INITIAL_SUPPLY);
         uint256 InterestCalc = 0 ether;
         for (uint i=0; i<lenders.length; i++) {
-            address payable makePayAdd = address(uint160(lenders[i]));
+            address payable makePayAdd = payable(address(uint160(lenders[i])));
 
 
             InterestCalc = balanceOf(makePayAdd) * (InterestRate);
@@ -82,7 +83,7 @@ contract PINE is ERC20 {
         uint256 tokensRepayEther = 0 ether;
         
         for (uint i=0; i<lenders.length; i++) {
-            address payable makePayAdd = address(uint160(lenders[i]));
+            address payable makePayAdd = payable(address(uint160(lenders[i])));
             
             tokensRepay = balanceOf(makePayAdd)/(RepaymentCount);
             tokensRepayEther = tokensRepay*(tokenBuyRate);
@@ -113,7 +114,7 @@ contract PINE is ERC20 {
             uint256 exceedingEther = 0 ether;
 
             exceedingEther = exceedingTokens * (tokenBuyRate);
-            msg.sender.transfer(exceedingEther);
+            payable(msg.sender).transfer(exceedingEther);
             tokensToBuy = tokensToBuy - (exceedingTokens);
             etherUsed = etherUsed -(exceedingEther);
         }
@@ -138,7 +139,7 @@ contract PINE is ERC20 {
         uint256 totalSupply
      ) public ERC20(name,symbol){
         totalSupply = INITIAL_SUPPLY;
-        owner = msg.sender;
+        owner = payable(msg.sender);
         tokenWallet = owner;
         _mint(msg.sender, totalSupply);
     }
