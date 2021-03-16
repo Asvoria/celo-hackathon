@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 //pragma solidity ^0.5.8;
 pragma solidity >=0.4.22 <0.9.0;
 import "../node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol";
@@ -14,6 +16,8 @@ contract PINE is ERC20 {
     //string memory name = string("PINEtoken");
     //string memory symbol = string("PINE");
     //uint256 internal decimals = 18;
+
+
 	uint256 public INITIAL_SUPPLY = 1e5;
     //
 	address payable public tokenWallet;
@@ -147,12 +151,18 @@ contract PINE is ERC20 {
         owner.transfer(address(this).balance);
     }
 	
-    //constructor() public ERC20("MyCollectible", "MCO") 
-	constructor () public ERC20("PineappleToken","PINE"){
-        //totalSupply = INITIAL_SUPPLY;
+
+	//constructor () public ERC20("PineappleToken","PINE"){
+    constructor(
+        string memory name,
+        string memory symbol,
+        uint256 totalSupply
+     ) ERC20(name,symbol){
+        totalSupply = INITIAL_SUPPLY;
         owner = msg.sender;
         tokenWallet = owner;
-        _mint(msg.sender, 1000000 * (10 ** uint256(decimals())));
+        _mint(msg.sender, totalSupply);
+        //_mint(msg.sender, 1000000 * (10 ** uint256(decimals())));
         //balanceOf(tokenWallet) = INITIAL_SUPPLY;
     }
 }

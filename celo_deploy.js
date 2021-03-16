@@ -4,7 +4,8 @@ const web3 = new Web3('https://alfajores-forno.celo-testnet.org')
 const kit = ContractKit.newKitFromWeb3(web3)
 const getAccount = require('./getAccount').getAccount
 // const HelloWorld = require('./build/contracts/HelloWorld.json')
-const HelloWorld = require('./build/contracts/HelloWorld.json')
+//const HelloWorld = require('./build/contracts/HelloWorld.json')
+const pine_v0 = require('./build/contracts/pine_v0.json')
 
 async function awaitWrapper(){
     let account = await getAccount()
@@ -21,7 +22,7 @@ async function awaitWrapper(){
 //     })
     let tx = await kit.sendTransaction({
         from: account.address,
-        data: HelloWorld.bytecode // from ./build/contracts/HelloWorld.json
+        data: pine_v0.bytecode // from ./build/contracts/HelloWorld.json
     })
 
 //     const receipt = await tx.waitReceipt()
