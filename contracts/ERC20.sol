@@ -4,7 +4,6 @@ pragma solidity >=0.8.0;
 
 import "./IERC20.sol";
 import "./IERC20Metadata.sol";
-import "./Context.sol";
 
 /**
  * @dev Implementation of the {IERC20} interface.
@@ -30,7 +29,9 @@ import "./Context.sol";
  * functions have been added to mitigate the well-known issues around setting
  * allowances. See {IERC20-approve}.
  */
-contract ERC20 is Context, IERC20, IERC20Metadata {
+
+
+contract ERC20 is IERC20, IERC20Metadata {
     mapping (address => uint256) private _balances;
 
     mapping (address => mapping (address => uint256)) private _allowances;
@@ -39,6 +40,16 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
 
     string private _name;
     string private _symbol;
+
+
+    function _msgSender() internal view virtual returns (address) {
+        return msg.sender;
+    }
+
+    function _msgData() internal view virtual returns (bytes calldata) {
+        this; // silence state mutability warning without generating bytecode - see https://github.com/ethereum/solidity/issues/2691
+        return msg.data;
+    }
 
     /**
      * @dev Sets the values for {name} and {symbol}.
