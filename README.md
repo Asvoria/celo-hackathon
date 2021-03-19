@@ -1,4 +1,4 @@
-# Pineapple Token Templete
+# Pineapple Token Template
 A SmartLoan ERC20 token templete for student loan.
 Fork from Hello Contract (Truffle + Remote Node)  
 https://learn.figment.io/network-documentation/celo/tutorial/hello-contracts
