@@ -1,5 +1,14 @@
 # Pineapple Token Templete
 A SmartLoan ERC20 token templete for student loan.
+
+#How to use
+1. The contract should be loaded by browser version of https://remix.ethereum.org/  
+2. Use contract templete: https://github.com/Asvoria/celo-hackathon/blob/master/contracts/PINE.sol
+3. Use Alfajores network.  
+4. On Remix-IDE, use celo plugin, enter contract name, symbol and total supply before deploy.  
+
+
+
 Fork from Hello Contract (Truffle + Remote Node)  
 https://learn.figment.io/network-documentation/celo/tutorial/hello-contracts
 
