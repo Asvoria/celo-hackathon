@@ -1,5 +1,5 @@
-# Pineapple Token Templete
-A SmartLoan ERC20 token templete for student loan.
+# Pineapple Token Template
+A SmartLoan ERC20 token template for student loan.
 
 #How to use
 1. The contract should be loaded by browser version of https://remix.ethereum.org/  
