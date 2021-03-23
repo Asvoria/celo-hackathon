@@ -6,7 +6,7 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contr
 
 contract PINE is ERC20 {
 
-	uint256 public INITIAL_SUPPLY = 1e5;
+	//uint256 public INITIAL_SUPPLY = 1e5;
 
 	address payable public tokenWallet;
     address payable public owner;
@@ -14,7 +14,7 @@ contract PINE is ERC20 {
     uint256 public ICOStartTime = block.timestamp;
     uint256 public ICOEndTime = block.timestamp + 60;
     bool public ICOCompleted;
-    uint256 public constant tokenBuyRate = 0.001 ether;
+    //uint256 public constant tokenBuyRate = 0.001 ether;
     
     uint256 public RepaymentStartTime;
     uint256 public RepaymentCount;
@@ -62,7 +62,9 @@ contract PINE is ERC20 {
     }
     
     //Can only start to distribute interest after the repayment period started
-    function distributeInterest() public payable onlyOwner afterCrowdsale repaymentPeriod{
+    function distributeInterest(
+            uint256 INITIAL_SUPPLY
+        ) public payable onlyOwner afterCrowdsale repaymentPeriod{
         //Interest is 5%per anum of monthly reported salary. monthlySalary
         require(monthlySalary > 0);
         uint256 InterestRate = (monthlySalary/100)* (5)/(INITIAL_SUPPLY);
@@ -78,7 +80,9 @@ contract PINE is ERC20 {
         }
     }
 
-    function Repayment() public payable onlyOwner afterCrowdsale repaymentPeriod {
+    function Repayment(
+            uint256 tokenBuyRate
+        ) public payable onlyOwner afterCrowdsale repaymentPeriod {
         uint256 tokensRepay;
         uint256 tokensRepayEther = 0 ether;
         
@@ -100,7 +104,9 @@ contract PINE is ERC20 {
         RepaymentCount--;
     }
     
-    function buyTokens() public payable onlyCrowdsale{
+    function buyTokens(
+            uint256 tokenBuyRate
+        ) public payable onlyCrowdsale{
         require(msg.sender != address(0));
         require(balanceOf(tokenWallet) > 0);
         
@@ -135,12 +141,15 @@ contract PINE is ERC20 {
 
     constructor(
         string memory name,
-        string memory symbol,
-        uint256 totalSupply
+        string memory symbol
+        //uint256 totalSupply
+        //Token price
      ) public ERC20(name,symbol){
-        totalSupply = INITIAL_SUPPLY;
+        //totalSupply = INITIAL_SUPPLY;
+        uint256 tokenPrice = 0.001 ether; //Fix the price and supply
+        uint256 INITIAL_SUPPLY = 1e5;
         owner = payable(msg.sender);
         tokenWallet = owner;
-        _mint(msg.sender, totalSupply);
+        _mint(msg.sender, INITIAL_SUPPLY);
     }
 }
