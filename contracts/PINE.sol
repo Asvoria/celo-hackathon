@@ -122,7 +122,7 @@ contract PINE is ERC20 {
             exceedingEther = exceedingTokens * (tokenBuyRate);
             payable(msg.sender).transfer(exceedingEther);
             tokensToBuy = tokensToBuy - (exceedingTokens);
-            etherUsed = etherUsed -(exceedingEther);
+            etherUsed = etherUsed - (exceedingEther);
         }
         //Need some additional safety algo to prevent direct call of the transferFrom function
         transferFrom(owner,msg.sender,uint256(tokensToBuy));
@@ -138,18 +138,20 @@ contract PINE is ERC20 {
     function emergencyExtract() external payable onlyOwner{
         owner.transfer(address(this).balance);
     }
+    
+    string public token_name = "PineappleToken";
+    string public token_symbol = "PINE";
+    uint256 public token_borrow = 10 ether; //User key in data
+    address public borrower;
+    uint256 public tokenPrice = 0.001 ether; //Fix the price and supply
+    uint256 public initial_token_supply = 1e5;
+    
+    //User have to key in the amount they want to borrow
+    //Amount of borrow is in ether?
+    
 
-    constructor(
-        string memory name,
-        string memory symbol
-        //uint256 totalSupply
-        //Token price
-     ) public ERC20(name,symbol){
-        //totalSupply = INITIAL_SUPPLY;
-        uint256 tokenPrice = 0.001 ether; //Fix the price and supply
-        uint256 INITIAL_SUPPLY = 1e5;
-        owner = payable(msg.sender);
-        tokenWallet = owner;
-        _mint(msg.sender, INITIAL_SUPPLY);
+    constructor() public ERC20(token_name,token_symbol){
+        borrower = payable(msg.sender);
+        _mint(borrower, initial_token_supply);
     }
 }
