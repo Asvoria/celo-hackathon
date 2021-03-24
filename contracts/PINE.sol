@@ -5,14 +5,21 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contr
 //Flatten the OpenZeppellin so that the truffle migration can work accordingly
 
 contract PINE is ERC20 {
-
-	//uint256 public INITIAL_SUPPLY = 1e5;
-
-	address payable public tokenWallet;
-    address payable public owner;
+    
+    string public token_name = "PineappleToken";    //Generated
+    string public token_symbol = "PINE";            //Generated
+    
+    uint256 public token_borrow = 10 ether;         //User key in data
+    uint256 public loan_duration = 1095 days;        //User key in data
+    
+    uint256 public tokenPrice = 0.001 ether;        //Fix 
+    uint256 public initial_token_supply = 1e5;      //Fix
+    
+    address payable public borrower;                //User key in data
+    address payable public tokenWallet;             //Generated
     
     uint256 public ICOStartTime = block.timestamp;
-    uint256 public ICOEndTime = block.timestamp + 60;
+    uint256 public ICOEndTime = block.timestamp + loan_duration;
     bool public ICOCompleted;
     //uint256 public constant tokenBuyRate = 0.001 ether;
     
@@ -34,7 +41,7 @@ contract PINE is ERC20 {
     }
 
     modifier onlyOwner{
-        require(msg.sender == owner);
+        require(msg.sender == borrower);
         _;
     }
 
@@ -125,7 +132,7 @@ contract PINE is ERC20 {
             etherUsed = etherUsed - (exceedingEther);
         }
         //Need some additional safety algo to prevent direct call of the transferFrom function
-        transferFrom(owner,msg.sender,uint256(tokensToBuy));
+        transferFrom(borrower,msg.sender,uint256(tokensToBuy));
         //Keep track of lenders for future repayment purpose
         saveAddress();
     }
@@ -136,19 +143,8 @@ contract PINE is ERC20 {
     }
 
     function emergencyExtract() external payable onlyOwner{
-        owner.transfer(address(this).balance);
+        borrower.transfer(address(this).balance);
     }
-    
-    string public token_name = "PineappleToken";
-    string public token_symbol = "PINE";
-    uint256 public token_borrow = 10 ether; //User key in data
-    address public borrower;
-    uint256 public tokenPrice = 0.001 ether; //Fix the price and supply
-    uint256 public initial_token_supply = 1e5;
-    
-    //User have to key in the amount they want to borrow
-    //Amount of borrow is in ether?
-    
 
     constructor() public ERC20(token_name,token_symbol){
         borrower = payable(msg.sender);
