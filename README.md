@@ -1,4 +1,4 @@
-# Pineapple Token Templete
+# Pineapple Token Template
 A SmartLoan ERC20 token templete for student loan.
 
 #How to use
