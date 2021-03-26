@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity >=0.4.22 <0.9.0;
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/ERC20.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.3.0-rc.3/contracts/token/ERC20/ERC20.sol";
+//https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.3.0-rc.3/contracts/token/ERC20/ERC20.sol
 //Flatten the OpenZeppellin so that the truffle migration can work accordingly
+//Use solidity compiler version 0.5.17
 
 contract PINE is ERC20 {
     
@@ -10,10 +12,10 @@ contract PINE is ERC20 {
     string public token_symbol = "PINE";            //Generated
     
     uint256 public token_borrow = 10 ether;         //User key in data
-    uint256 public loan_duration = 1095 days;        //User key in data
+    uint256 public loan_duration = 1095 days;       //User key in data
     
-    uint256 public tokenPrice = 0.001 ether;        //Fix 
-    uint256 public initial_token_supply = 1e5;      //Fix
+    uint256 public tokenPrice = 0.000001 ether;     //Fix 
+    uint256 public initial_token_supply = 1e6;      //Fix
     
     address payable public borrower;                //User key in data
     address payable public tokenWallet;             //Generated
@@ -21,7 +23,6 @@ contract PINE is ERC20 {
     uint256 public ICOStartTime = block.timestamp;
     uint256 public ICOEndTime = block.timestamp + loan_duration;
     bool public ICOCompleted;
-    //uint256 public constant tokenBuyRate = 0.001 ether;
     
     uint256 public RepaymentStartTime;
     uint256 public RepaymentCount;
@@ -54,6 +55,11 @@ contract PINE is ERC20 {
         require(block.timestamp > RepaymentStartTime);
         _;
     }
+    
+    function destroy() onlyOwner public {
+        selfdestruct(borrower);
+    }
+
 
     function saveAddress() payable public {
         lenders.push(msg.sender);
@@ -146,7 +152,7 @@ contract PINE is ERC20 {
         borrower.transfer(address(this).balance);
     }
 
-    constructor() public ERC20(token_name,token_symbol){
+    constructor() ERC20(token_name,token_symbol){
         borrower = payable(msg.sender);
         _mint(borrower, initial_token_supply);
     }
