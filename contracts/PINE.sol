@@ -35,10 +35,11 @@ contract PINE is ERC20 {
     
     uint256 public tokenPrice = 0.000001 ether;     //Fix 
     uint256 public initial_token_supply = 1e6;      //Fix
-    uint256 public INITIAL_SUPPLY = initial_token_supply * token_borrow;
+    uint256 public INITIAL_SUPPLY = initial_token_supply * token_borrow * 10e18;
     
     address payable public borrower;                //User key in data
-    address payable public tokenWallet;             //Generated
+    address payable public tokenWallet = borrower;             //Generated
+    
     
     uint256 public ICOStartTime = block.timestamp;
     uint256 public ICOEndTime = block.timestamp + loan_duration;
