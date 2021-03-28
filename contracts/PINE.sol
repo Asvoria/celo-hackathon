@@ -38,7 +38,7 @@ contract PINE is ERC20 {
     uint256 public INITIAL_SUPPLY = initial_token_supply * token_borrow * 10e18;
     
     address payable public borrower;                //User key in data
-    address payable public tokenWallet = borrower;             //Generated
+    address payable public tokenWallet;             //Generated
     
     
     uint256 public ICOStartTime = block.timestamp;
@@ -187,6 +187,7 @@ contract PINE is ERC20 {
 
     constructor() ERC20(token_name,token_symbol){
         borrower = payable(msg.sender);
+        tokenWallet = borrower;
         _mint(borrower, (INITIAL_SUPPLY));
     }
 }
