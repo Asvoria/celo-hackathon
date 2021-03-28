@@ -11,7 +11,7 @@ contract PINE is ERC20 {
     string public token_name = "PineappleToken";    //Generated
     string public token_symbol = "PINE";            //Generated
     
-    uint256 public token_borrow = 10 ether;         //User key in data
+    uint256 public token_borrow = 10;               //User key in data
     uint256 public loan_duration = 1095 days;       //User key in data
     
     uint256 public tokenPrice = 0.000001 ether;     //Fix 
