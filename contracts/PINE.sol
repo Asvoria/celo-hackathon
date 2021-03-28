@@ -9,17 +9,33 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v3.4
  * @dev Use solidity compiler version 0.7.3
  */
 
-
 contract PINE is ERC20 {
+    
+    enum stages {
+        STAGE_INIT,
+        STAGE_FUNDING,
+        STAGE_GRACE,
+        STAGE_REPAYMENT,
+        STAGE_END
+    }
+    // This is the current stage.
+    stages public CURENT_STAGE = stages.STAGE_INIT;
+    
+    int[] public interest_rates = [-20,-10,0,10,20];
     
     string public token_name = "PineappleToken";    //Generated
     string public token_symbol = "PINE";            //Generated
     
-    uint256 public token_borrow = 10;               //User key in data, this will be multiplied
-    uint256 public loan_duration = 1095 days;       //User key in data
+    uint256 public token_borrow = 10;                   //User key in data, this will be multiplied
+    uint256 public loan_duration = 1095 days;           //User key in data, 3 years
+    uint256 public loan_payment_duration = 3650 days;   //User key in data, 10 years
+    uint public loan_payment_count = loan_payment_duration / 30;
+    uint public loan_payment_count_num;
+    //1 ether = 1,000,000,000,000,000,000 wei (10^18)
     
     uint256 public tokenPrice = 0.000001 ether;     //Fix 
     uint256 public initial_token_supply = 1e6;      //Fix
+    uint256 public INITIAL_SUPPLY = initial_token_supply * token_borrow;
     
     address payable public borrower;                //User key in data
     address payable public tokenWallet;             //Generated
@@ -29,12 +45,20 @@ contract PINE is ERC20 {
     bool public ICOCompleted;
     
     uint256 public RepaymentStartTime;
-    uint256 public RepaymentCount;
     uint256 public monthlySalary = 0;
 
     address[] public lenders;
+    uint256[] public payment_principal;
     
-
+    // modifier
+    modifier atStage(stages _stage) {
+        require(
+            CURENT_STAGE == _stage,
+            "Function cannot be called at this time."
+        );
+        _;
+    }
+    
     modifier whenIcoCompleted{
         require(ICOCompleted);
         _;
@@ -60,35 +84,44 @@ contract PINE is ERC20 {
         _;
     }
     
+    // function
+    function nextStage() internal {
+        CURENT_STAGE = stages(uint(CURENT_STAGE) + 1);
+    }
+    
     function destroy() onlyOwner public {
         selfdestruct(borrower);
     }
-
 
     function saveAddress() payable public {
         lenders.push(msg.sender);
     }
     
     //Call function to start repayment period
-    function startRepayment(uint256 _monthlySalary, uint256 _RepaymentCount) public onlyOwner afterCrowdsale returns(bool){
+    function startRepayment(
+            uint256 _monthlySalary
+        ) public onlyOwner afterCrowdsale returns(bool){
         RepaymentStartTime = block.timestamp;
+        loan_payment_count_num = 0;
         monthlySalary = _monthlySalary * (1 ether); //when input, it is in wei
-        RepaymentCount = _RepaymentCount;
-        //endBurnLeftoverToken();
+        _burn(borrower, balanceOf(borrower)); //When start repayment, burn all leftover tokens remained in borrower account
+        //calculate payment_principal
+        for (uint i=0; i<lenders.length; i++) {
+            address payable makePayAdd = address(uint160(lenders[i]));
+            payment_principal[i] = balanceOf(makePayAdd)/(loan_payment_count);
+        }
         return true;
     }
     
     //Can only start to distribute interest after the repayment period started
-    function distributeInterest(
-            uint256 INITIAL_SUPPLY
-        ) public payable onlyOwner afterCrowdsale repaymentPeriod{
+    //interests is distributed according to lenders token ownership
+    function distributeInterest() public payable onlyOwner afterCrowdsale repaymentPeriod{
         //Interest is 5%per anum of monthly reported salary. monthlySalary
         require(monthlySalary > 0);
         uint256 InterestRate = (monthlySalary/100)* (5)/(INITIAL_SUPPLY);
         uint256 InterestCalc = 0 ether;
         for (uint i=0; i<lenders.length; i++) {
             address payable makePayAdd = address(uint160(lenders[i]));
-
             InterestCalc = balanceOf(makePayAdd) * (InterestRate);
             require (InterestCalc > 0, "Amount is less than the minimum value");
             require (msg.sender.balance >= InterestCalc, "Contract balance is empty");
@@ -96,32 +129,29 @@ contract PINE is ERC20 {
         }
     }
 
-    function Repayment(
-            uint256 tokenBuyRate
-        ) public payable onlyOwner afterCrowdsale repaymentPeriod {
+    function Repayment() public payable onlyOwner afterCrowdsale repaymentPeriod {
         uint256 tokensRepay;
         uint256 tokensRepayEther = 0 ether;
         
         for (uint i=0; i<lenders.length; i++) {
             address payable makePayAdd = address(uint160(lenders[i]));
             
-            tokensRepay = balanceOf(makePayAdd)/(RepaymentCount);
-            tokensRepayEther = tokensRepay*(tokenBuyRate);
+            tokensRepay = payment_principal[i];
+            tokensRepayEther = tokensRepay*(tokenPrice);
             
             require (tokensRepayEther > 0, "Amount is less than the minimum value");
             require (msg.sender.balance >= tokensRepayEther, "Contract balance is empty");
             
             makePayAdd.transfer(tokensRepayEther); //ether must be in contract balance
             transferFrom(makePayAdd,msg.sender,tokensRepay);
+            
+            _burn(makePayAdd, payment_principal[i]);
         }
-        
-        //burn the repaid tokens here
-        //endBurnLeftoverToken();
-        RepaymentCount--;
+        loan_payment_count_num++;
     }
     
     function buyTokens(
-            uint256 tokenBuyRate
+            uint256 tokenBuyRate        //ether 
         ) public payable onlyCrowdsale{
         require(msg.sender != address(0));
         require(balanceOf(tokenWallet) > 0);
@@ -140,9 +170,8 @@ contract PINE is ERC20 {
             tokensToBuy = tokensToBuy - (exceedingTokens);
             etherUsed = etherUsed - (exceedingEther);
         }
-        //Need some additional safety algo to prevent direct call of the transferFrom function
+
         transferFrom(borrower,msg.sender,uint256(tokensToBuy));
-        //Keep track of lenders for future repayment purpose
         saveAddress();
     }
     
@@ -157,6 +186,6 @@ contract PINE is ERC20 {
 
     constructor() ERC20(token_name,token_symbol){
         borrower = msg.sender;
-        _mint(borrower, (initial_token_supply*token_borrow));
+        _mint(borrower, (INITIAL_SUPPLY));
     }
 }
