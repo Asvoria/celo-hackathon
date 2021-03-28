@@ -2,16 +2,20 @@
 
 pragma solidity >=0.4.22 <0.9.0;
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v3.4-solc-0.7/contracts/token/ERC20/ERC20.sol";
-//https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.3.0-rc.3/contracts/token/ERC20/ERC20.sol
-//Flatten the OpenZeppellin so that the truffle migration can work accordingly
-//Use solidity compiler version 0.5.17
+
+/**
+ * @title PineappleToke
+ * @author Asvoria Kuan<asvoria@live.com>
+ * @dev Use solidity compiler version 0.7.3
+ */
+
 
 contract PINE is ERC20 {
     
     string public token_name = "PineappleToken";    //Generated
     string public token_symbol = "PINE";            //Generated
     
-    uint256 public token_borrow = 10;               //User key in data
+    uint256 public token_borrow = 10;               //User key in data, this will be multiplied
     uint256 public loan_duration = 1095 days;       //User key in data
     
     uint256 public tokenPrice = 0.000001 ether;     //Fix 
