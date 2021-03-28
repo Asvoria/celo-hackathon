@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity >=0.4.22 <0.9.0;
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.3.0-rc.3/contracts/token/ERC20/ERC20.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v3.4-solc-0.7/contracts/token/ERC20/ERC20.sol";
 //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v2.3.0-rc.3/contracts/token/ERC20/ERC20.sol
 //Flatten the OpenZeppellin so that the truffle migration can work accordingly
 //Use solidity compiler version 0.5.17
@@ -83,8 +83,7 @@ contract PINE is ERC20 {
         uint256 InterestRate = (monthlySalary/100)* (5)/(INITIAL_SUPPLY);
         uint256 InterestCalc = 0 ether;
         for (uint i=0; i<lenders.length; i++) {
-            address payable makePayAdd = payable(address(uint160(lenders[i])));
-
+            address payable makePayAdd = address(uint160(lenders[i]));
 
             InterestCalc = balanceOf(makePayAdd) * (InterestRate);
             require (InterestCalc > 0, "Amount is less than the minimum value");
@@ -100,7 +99,7 @@ contract PINE is ERC20 {
         uint256 tokensRepayEther = 0 ether;
         
         for (uint i=0; i<lenders.length; i++) {
-            address payable makePayAdd = payable(address(uint160(lenders[i])));
+            address payable makePayAdd = address(uint160(lenders[i]));
             
             tokensRepay = balanceOf(makePayAdd)/(RepaymentCount);
             tokensRepayEther = tokensRepay*(tokenBuyRate);
@@ -133,7 +132,7 @@ contract PINE is ERC20 {
             uint256 exceedingEther = 0 ether;
 
             exceedingEther = exceedingTokens * (tokenBuyRate);
-            payable(msg.sender).transfer(exceedingEther);
+            msg.sender.transfer(exceedingEther);
             tokensToBuy = tokensToBuy - (exceedingTokens);
             etherUsed = etherUsed - (exceedingEther);
         }
@@ -153,7 +152,7 @@ contract PINE is ERC20 {
     }
 
     constructor() ERC20(token_name,token_symbol){
-        borrower = payable(msg.sender);
-        _mint(borrower, initial_token_supply);
+        borrower = msg.sender;
+        _mint(borrower, (initial_token_supply*token_borrow));
     }
 }
