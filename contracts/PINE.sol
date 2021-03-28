@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity >=0.4.22 <0.9.0;
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v3.4-solc-0.7/contracts/token/ERC20/ERC20.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v4.0/contracts/token/ERC20/ERC20.sol";
 
 /**
  * @title PineappleToke
  * @author Asvoria Kuan<asvoria@live.com>
- * @dev Use solidity compiler version 0.7.3
+ * @dev Use solidity compiler version 0.8.1
  */
 
 contract PINE is ERC20 {
@@ -107,7 +107,7 @@ contract PINE is ERC20 {
         _burn(borrower, balanceOf(borrower)); //When start repayment, burn all leftover tokens remained in borrower account
         //calculate payment_principal
         for (uint i=0; i<lenders.length; i++) {
-            address payable makePayAdd = address(uint160(lenders[i]));
+            address payable makePayAdd = payable(address(uint160(lenders[i])));
             payment_principal[i] = balanceOf(makePayAdd)/(loan_payment_count);
         }
         return true;
@@ -121,7 +121,7 @@ contract PINE is ERC20 {
         uint256 InterestRate = (monthlySalary/100)* (5)/(INITIAL_SUPPLY);
         uint256 InterestCalc = 0 ether;
         for (uint i=0; i<lenders.length; i++) {
-            address payable makePayAdd = address(uint160(lenders[i]));
+            address payable makePayAdd = payable(address(uint160(lenders[i])));
             InterestCalc = balanceOf(makePayAdd) * (InterestRate);
             require (InterestCalc > 0, "Amount is less than the minimum value");
             require (msg.sender.balance >= InterestCalc, "Contract balance is empty");
@@ -134,7 +134,7 @@ contract PINE is ERC20 {
         uint256 tokensRepayEther = 0 ether;
         
         for (uint i=0; i<lenders.length; i++) {
-            address payable makePayAdd = address(uint160(lenders[i]));
+            address payable makePayAdd = payable(address(uint160(lenders[i])));
             
             tokensRepay = payment_principal[i];
             tokensRepayEther = tokensRepay*(tokenPrice);
@@ -166,7 +166,7 @@ contract PINE is ERC20 {
             uint256 exceedingEther = 0 ether;
 
             exceedingEther = exceedingTokens * (tokenBuyRate);
-            msg.sender.transfer(exceedingEther);
+            payable(msg.sender).transfer(exceedingEther);
             tokensToBuy = tokensToBuy - (exceedingTokens);
             etherUsed = etherUsed - (exceedingEther);
         }
@@ -185,7 +185,7 @@ contract PINE is ERC20 {
     }
 
     constructor() ERC20(token_name,token_symbol){
-        borrower = msg.sender;
+        borrower = payable(msg.sender);
         _mint(borrower, (INITIAL_SUPPLY));
     }
 }
