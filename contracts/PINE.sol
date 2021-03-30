@@ -26,7 +26,7 @@ contract PINE is ERC20 {
     string public token_name = "PineappleToken";    //Generated
     string public token_symbol = "PINE";            //Generated
     
-    uint256 public token_borrow = 10;                   //User key in data, this will be multiplied
+    uint256 public token_borrow = 1000;                   //User key in data, this will be multiplied
     uint256 public loan_duration = 1095 days;           //User key in data, 3 years
     uint256 public loan_payment_duration = 3650 days;   //User key in data, 10 years
     uint public loan_payment_count = loan_payment_duration / 30;
@@ -34,8 +34,8 @@ contract PINE is ERC20 {
     //1 ether = 1,000,000,000,000,000,000 wei (10^18)
     
     uint256 public tokenPrice = 0.000001 ether;     //Fix 
-    uint256 public initial_token_supply = 1e6;      //Fix
-    uint256 public INITIAL_SUPPLY = initial_token_supply * token_borrow * 10e18;
+    uint256 public initial_token_supply = 1e18;      //Fix
+    uint256 public INITIAL_SUPPLY = initial_token_supply * token_borrow;
     
     address payable public borrower;                //User key in data
     address payable public tokenWallet;             //Generated
