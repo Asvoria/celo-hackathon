@@ -156,7 +156,6 @@ contract PINE is ERC20 {
         ) public payable onlyCrowdsale{
         require(msg.sender != address(0));
         require(balanceOf(tokenWallet) > 0);
-        
         uint256 etherUsed = uint256(msg.value);
         require(etherUsed > 0);
         uint256 tokensToBuy = etherUsed/(tokenBuyRate);
