@@ -1,6 +1,9 @@
 // This script requires that you have already deployed HelloWorld.sol with Truffle
 // Go back and do that if you haven't already
 
+//Contract address deployed under remix ide
+const contractAddress = '0x671858a270BbAFc8Ce039FCF8E00BEe8862a8C64'
+
 // 1. Import web3 and contractkit 
 const Web3 = require("web3")
 const ContractKit = require('@celo/contractkit')
@@ -12,32 +15,35 @@ const getAccount = require('./getAccount').getAccount
 const web3 = new Web3('https://alfajores-forno.celo-testnet.org')
 const kit = ContractKit.newKitFromWeb3(web3)
 
-// import HelloWorld info
-const PINE = require('./build/contracts/PINE.json')
+// import contract json
+const PINE = require('./contracts/artifacts/PINE.json')
 
 // Initialize a new Contract interface
 async function initContract(){
     // Check the Celo network ID
     const networkId = await web3.eth.net.getId();
-    const deployedNetwork = PINE.networks[networkId];
+    //const deployedNetwork = PINE.networks[networkId];
+    
+
+    //console.log('deployedNetwork.address',deployedNetwork.address)
+    //deployedNetwork.address = contractAddress
     // Create a new contract instance with the HelloWorld contract info
     let instance = new web3.eth.Contract(
         PINE.abi,
-        deployedNetwork && deployedNetwork.address
+        contractAddress
     );
 
     getName(instance)
-    setName(instance, "PINE")
 
-    
 }
 
 // Read the 'name' stored in the HelloWorld.sol contract
 async function getName(instance){
-    let name = await instance.methods.getName().call()
+    let name = await instance.methods.name().call()
     console.log(name)
 }
 
+/*
 // Set the 'name' stored in the HelloWorld.sol contract
 async function setName(instance, newName){
     let account = await getAccount()
@@ -55,5 +61,6 @@ async function setName(instance, newName){
     let receipt = await tx.waitReceipt()
     console.log(receipt)
 }
+*/
 
 initContract()
