@@ -31,6 +31,7 @@ contract PINE is ERC20 {
     uint256 public loan_payment_duration = 3650 days;   //User key in data, 10 years
     uint public loan_payment_count = loan_payment_duration / 30;
     uint public loan_payment_count_num;
+    uint256 public tokenBuyRate = 1;
     //1 ether = 1,000,000,000,000,000,000 wei (10^18)
     
     uint256 public tokenPrice = 0.000001 ether;     //Fix 
@@ -151,9 +152,7 @@ contract PINE is ERC20 {
         loan_payment_count_num++;
     }
     
-    function buyTokens(
-            uint256 tokenBuyRate        //ether 
-        ) public payable onlyCrowdsale{
+    function buyTokens() public payable onlyCrowdsale{
         require(msg.sender != address(0));
         require(balanceOf(tokenWallet) > 0);
         uint256 etherUsed = uint256(msg.value);
