@@ -226,13 +226,7 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "tokenBuyRate",
-						"type": "uint256"
-					}
-				],
+				"inputs": [],
 				"name": "buyTokens",
 				"outputs": [],
 				"stateMutability": "payable",
@@ -516,6 +510,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "tokenBuyRate",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "tokenPrice",
 				"outputs": [
 					{
@@ -711,11 +718,11 @@
 	},
 	"sources": {
 		"github/Asvoria/celo-hackathon-smartloan/contracts/PINE.sol": {
-			"keccak256": "0x493a51be2a0752f15ee1f7c75724c3ea5895230ee436314f280da0ef44e33151",
+			"keccak256": "0xd8f2a31d4bcb03909d3ce9c19f375644f9b8c08c4c1ece99b47502b7301a0d8d",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://204456056fa06bd8fe1d2998a450e564e0b580bf4f9a364dd80fb0ab49679ebd",
-				"dweb:/ipfs/QmPaaamuJLCQ37AUF5iP4h9GgnpwakwfuSyhK2oCytYCNX"
+				"bzz-raw://3ae7a8058ab596b05665dfbd85fc6b164235a8f29cb57bed6b877ce8bb7dae83",
+				"dweb:/ipfs/QmSUDmJM5ZgExkPAFHrizTmP1gJjrTas5Hius6GRRs5Q2s"
 			]
 		},
 		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v4.0/contracts/token/ERC20/ERC20.sol": {
