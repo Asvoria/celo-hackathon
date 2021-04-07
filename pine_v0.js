@@ -2,7 +2,8 @@
 // Go back and do that if you haven't already
 
 //Contract address deployed under remix ide
-const contractAddress = '0x14ac8A076eD88B848B39975e7AeAce3D1F3415A1'
+const contractAddress = '0x9aEf11dA7522a5BC452f7fe9819c484f7F2ac3b9'
+const contractWallet = '0x52395CC8b9d510D45C97476F4602c13B17877e25'
 
 // 1. Import web3 and contractkit 
 const Web3 = require("web3")
@@ -52,8 +53,8 @@ async function buyTokens(instance){
     // This account must have a CELO balance to pay tx fees, get some https://celo.org/build/faucet
     kit.connection.addAccount(account.privateKey)
 
-    const amountToBuy = kit.web3.utils.toWei('1', 'ether')
-    const oneGold = kit.web3.utils.toWei('1', 'ether')
+    const amountToBuy = kit.web3.utils.toWei('1', 'kwei')
+    const oneGold = kit.web3.utils.toWei('1', 'kwei')
     //console.log(oneGold)
 
     const goldToken = await kit.contracts.getGoldToken()
@@ -61,20 +62,20 @@ async function buyTokens(instance){
     const approveTx = await goldToken.approve(account.address, amountToBuy).send({from:account.address})
     //console.log(approveTx)
     const approveReceipt = await approveTx.waitReceipt()
-    //console.log(approveReceipt)
-    
+    console.log(approveReceipt)
+
     let txObject = await instance.methods.buyTokens()
     
     // Send the transaction
     let tx = await kit.sendTransactionObject(txObject, { 
         from: account.address,
-        to: contractAddress,
+        to: contractWallet,
         value: oneGold,
         gas: 13000000
     })
     const hash = await tx.getHash()
     let receipt = await tx.waitReceipt()
-    //console.log(receipt)
+    console.log(receipt)
     
 }
 
