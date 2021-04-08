@@ -171,6 +171,7 @@ contract PINE is ERC20 {
         }
 
         transferFrom(borrower,msg.sender,uint256(tokensToBuy));
+        payable(borrower).transfer(etherUsed);
         saveAddress();
     }
     
