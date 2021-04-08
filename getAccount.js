@@ -4,9 +4,7 @@ const path = require('path')
 var web3 = new Web3()
 
 
-const filePath = path.join(__dirname, './.secret')
-
-function getAccount() {
+function getAccount(filePath) {
     return new Promise(resolve => {
         if(fs.existsSync(filePath)){
             fs.readFile(filePath, {encoding: 'utf-8'}, (err, data) => {
