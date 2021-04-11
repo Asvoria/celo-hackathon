@@ -226,7 +226,26 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "tokensBorrowed",
+						"type": "uint256"
+					}
+				],
+				"name": "borrowerMint",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "debtAdds",
+						"type": "address"
+					}
+				],
 				"name": "buyTokens",
 				"outputs": [],
 				"stateMutability": "payable",
@@ -445,6 +464,19 @@
 						"internalType": "string",
 						"name": "",
 						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "ownerAdds",
+				"outputs": [
+					{
+						"internalType": "address payable",
+						"name": "",
+						"type": "address"
 					}
 				],
 				"stateMutability": "view",
@@ -718,11 +750,11 @@
 	},
 	"sources": {
 		"github/Asvoria/celo-hackathon-smartloan/contracts/PINE.sol": {
-			"keccak256": "0x8a524412cd9608042eac9335be1be4c7f0a85b409c47b198baba3e91c36b7309",
+			"keccak256": "0x235e91d6165e5d52ebf380e5f4e6e813b6c61ff5d8920be5479ee4a7d8c74c81",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://f87ce4c3bdb17a38708992af564b575e87cd9083e52c26964546aa2a553221d2",
-				"dweb:/ipfs/QmWaBeQS9Hc4Jjs1z5XMhbwz1usTVA8KNJqN57kfD9Np3Q"
+				"bzz-raw://b534c70218c0c0b407f79a45eb60958ab879185773b0ad1158cef0bf61fc2728",
+				"dweb:/ipfs/QmPhh2Ny4VQA1reKdNB8arLHpBKyyXn8bhb3sry9jCXMVJ"
 			]
 		},
 		"https://github.com/OpenZeppelin/openzeppelin-contracts/blob/release-v4.0/contracts/token/ERC20/ERC20.sol": {

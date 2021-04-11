@@ -37,8 +37,8 @@ contract PINE is ERC20 {
     uint256 public tokenPrice = 0.000001 ether;     //Fix 
     uint256 public initial_token_supply = 1e18;      //Fix
     uint256 public INITIAL_SUPPLY = initial_token_supply * token_borrow;
-    
-    address payable public borrower;                //User key in data
+    address payable public borrower;
+    address payable public ownerAdds;                //User key in data
     address payable public tokenWallet;             //Generated
     
     
@@ -72,7 +72,7 @@ contract PINE is ERC20 {
     }
 
     modifier onlyOwner{
-        require(msg.sender == borrower);
+        require(msg.sender == ownerAdds);
         _;
     }
 
@@ -92,7 +92,7 @@ contract PINE is ERC20 {
     }
     
     function destroy() onlyOwner public {
-        selfdestruct(borrower);
+        selfdestruct(ownerAdds);
     }
 
     function saveAddress() payable public {
@@ -106,7 +106,7 @@ contract PINE is ERC20 {
         RepaymentStartTime = block.timestamp;
         loan_payment_count_num = 0;
         monthlySalary = _monthlySalary * (1 ether); //when input, it is in wei
-        _burn(borrower, balanceOf(borrower)); //When start repayment, burn all leftover tokens remained in borrower account
+        _burn(ownerAdds, balanceOf(ownerAdds)); //When start repayment, burn all leftover tokens remained in borrower account
         //calculate payment_principal
         for (uint i=0; i<lenders.length; i++) {
             address payable makePayAdd = payable(address(uint160(lenders[i])));
@@ -152,16 +152,17 @@ contract PINE is ERC20 {
         loan_payment_count_num++;
     }
     
-    function buyTokens() public payable onlyCrowdsale{
+    function buyTokens(address debtAdds) public payable onlyCrowdsale{
+        address payable token_Wallet = payable(debtAdds);
         require(msg.sender != address(0));
-        require(balanceOf(tokenWallet) > 0);
+        require(balanceOf(token_Wallet) > 0);
         uint256 etherUsed = uint256(msg.value);
         require(etherUsed > 0);
         uint256 tokensToBuy = etherUsed/(tokenBuyRate);
         
         // Return extra ether when tokensToBuy > balances[tokenWallet]
-        if(tokensToBuy > balanceOf(tokenWallet)){
-            uint256 exceedingTokens = tokensToBuy - (balanceOf(tokenWallet));
+        if(tokensToBuy > balanceOf(token_Wallet)){
+            uint256 exceedingTokens = tokensToBuy - (balanceOf(token_Wallet));
             uint256 exceedingEther = 0 ether;
 
             exceedingEther = exceedingTokens * (tokenBuyRate);
@@ -170,8 +171,8 @@ contract PINE is ERC20 {
             etherUsed = etherUsed - (exceedingEther);
         }
 
-        transferFrom(borrower,msg.sender,uint256(tokensToBuy));
-        payable(borrower).transfer(etherUsed);
+        transferFrom(token_Wallet,msg.sender,uint256(tokensToBuy));
+        payable(token_Wallet).transfer(etherUsed);
         saveAddress();
     }
     
@@ -181,12 +182,18 @@ contract PINE is ERC20 {
     }
 
     function emergencyExtract() external payable onlyOwner{
-        borrower.transfer(address(this).balance);
+        ownerAdds.transfer(address(this).balance);
+    }
+    
+    function borrowerMint(uint256 tokensBorrowed) public payable {
+        borrower = payable(msg.sender);
+        tokenWallet = borrower;
+        _mint(borrower, (tokensBorrowed*(1 ether)));
     }
 
     constructor() ERC20(token_name,token_symbol){
-        borrower = payable(msg.sender);
-        tokenWallet = borrower;
-        _mint(borrower, (INITIAL_SUPPLY));
+        ownerAdds = payable(msg.sender);
+        tokenWallet = ownerAdds;
+        _mint(ownerAdds, (INITIAL_SUPPLY));
     }
 }
