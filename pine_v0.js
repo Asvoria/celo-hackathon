@@ -23,12 +23,8 @@ const kit = ContractKit.newKitFromWeb3(web3)
 // import contract json
 const PINE = require('./contracts/artifacts/PINE.json')
 
-
-
 // Initialize a new Contract interface
 async function initContract(){
-
-
 
     // Check the Celo network ID
     const networkId = await web3.eth.net.getId();
@@ -53,7 +49,6 @@ async function getName(instance){
     console.log(name)
 }
 
-
 // Set the 'name' stored in the HelloWorld.sol contract
 async function buyTokens(instance){
     let account = await getAccount(userAccount)
@@ -70,18 +65,11 @@ async function buyTokens(instance){
     console.log(sellAccount.address)
     console.log("Token Balance: "+SBalanceOf)
 
-    
-
-
-    // paid gas in cUSD
-
     // Add your account to ContractKit to sign transactions
     // This account must have a CELO balance to pay tx fees, get some https://celo.org/build/faucet
     kit.connection.addAccount(sellAccount.privateKey)
     kit.connection.addAccount(account.privateKey)
 
-
-    
     const amountToBuy = kit.web3.utils.toWei('1', 'ether')
     const oneGold = kit.web3.utils.toWei('1', 'ether')
     const gasFee = kit.web3.utils.toWei('13', 'mwei')
@@ -108,7 +96,6 @@ async function buyTokens(instance){
     let receipt = await tx.waitReceipt()
     await console.log(receipt)
 
-
     console.log("### After buyToken transaction: ")
 
     BBalanceOf = await instance.methods.balanceOf(account.address).call()
@@ -118,7 +105,6 @@ async function buyTokens(instance){
     SBalanceOf = await instance.methods.balanceOf(sellAccount.address).call()
     console.log(sellAccount.address)
     console.log("Token Balance: "+SBalanceOf)
-
 }
 
 
