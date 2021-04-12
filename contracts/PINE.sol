@@ -188,12 +188,10 @@ contract PINE is ERC20 {
     function borrowerMint(uint256 tokensBorrowed) public payable {
         borrower = payable(msg.sender);
         tokenWallet = borrower;
-        _mint(borrower, (tokensBorrowed*(1 ether)));
+        _mint(borrower, (tokensBorrowed));
     }
 
     constructor() ERC20(token_name,token_symbol){
-        ownerAdds = payable(msg.sender);
-        tokenWallet = ownerAdds;
-        _mint(ownerAdds, (INITIAL_SUPPLY));
+        
     }
 }
