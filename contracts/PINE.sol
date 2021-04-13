@@ -50,7 +50,9 @@ contract PINE is ERC20 {
     uint256 public monthlySalary = 0;
 
     address[] public lenders;
+    address[] public borrowers;
     uint256[] public payment_principal;
+    address payable public deployWallet;
     
     // modifier
     modifier atStage(stages _stage) {
@@ -97,6 +99,9 @@ contract PINE is ERC20 {
 
     function saveAddress() payable public {
         lenders.push(msg.sender);
+    }
+    function saveAddressBorrower() payable public {
+        borrowers.push(msg.sender);
     }
     
     //Call function to start repayment period
@@ -160,6 +165,8 @@ contract PINE is ERC20 {
         require(etherUsed > 0);
         uint256 tokensToBuy = etherUsed/(tokenBuyRate);
         
+        approve(payable(msg.sender), etherUsed);
+        
         // Return extra ether when tokensToBuy > balances[tokenWallet]
         if(tokensToBuy > balanceOf(token_Wallet)){
             uint256 exceedingTokens = tokensToBuy - (balanceOf(token_Wallet));
@@ -189,9 +196,22 @@ contract PINE is ERC20 {
         borrower = payable(msg.sender);
         tokenWallet = borrower;
         _mint(borrower, (tokensBorrowed));
+        saveAddressBorrower();
+    }
+    
+    function checkBorrower() public view returns(bool){
+        address checkAdds = msg.sender;
+
+        for (uint i=0; i<borrowers.length; i++) {
+            if(checkAdds==borrowers[i]){
+                //found match
+                return true;
+            } 
+        }
+        return false;
     }
 
     constructor() ERC20(token_name,token_symbol){
-        
+        deployWallet = payable(address(msg.sender));
     }
 }
